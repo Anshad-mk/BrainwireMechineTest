@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const db = require('../Model/database')
 
 // GET all users
 router.get('/users', (req, res) => {
@@ -9,30 +10,35 @@ router.get('/users', (req, res) => {
       return res.status(500).json({ error: 'An error occurred while fetching users.' });
     }
     res.json(rows);
-    console.log(rows)
+    // console.log(rows)
   });
 });
 
 // POST create a new user
 router.post('/users', (req, res) => {
-  const { first_name, last_name,  address } = req.body;
+  const { firstname, lastname, dob, address } = req.body;
 
-  if (!first_name || !last_name  || !address) {
+
+  if (!firstname || !lastname || !dob || !address) {
     return res.status(400).json({ error: 'All fields are required.' });
   }
 
+    // Convert dob to the correct format (YYYY-MM-DD)
+    const dobDate = new Date(dob);
+    const formattedDob = dobDate.toISOString().split('T')[0];
 
   // Insert a new user into the "users" table
   db.run(
     'INSERT INTO users (first_name, last_name, dob, address) VALUES (?, ?, ?, ?)',
-    [first_name, last_name, address],
+    [firstname, lastname, formattedDob, address],
     function (err) {
       if (err) {
         console.error('Error executing query:', err.message);
         return res.status(500).json({ error: 'An error occurred while adding a new user.' });
       }
 
-      res.status(201).json({ message: 'User added successfully', user_id: this.lastID });
+console.log("Success")
+      res.status(201).json({ message: 'User added successfully' });
     }
   );
 });
@@ -59,15 +65,15 @@ router.get('/users/:id', (req, res) => {
 // update user details by user ID
 router.put('/users/:id', (req, res) => {
   const userId = req.params.id;
-  const { firstName, lastName, dob, address } = req.body;
+  const { firstname, lastname, dob, address } = req.body;
 
-  if (!firstName || !lastName || !dob || !address) {
+  if (!firstname || !lastname || !dob || !address) {
     return res.status(400).json({ error: 'All fields are required.' });
   }
 
   db.run(
     'UPDATE users SET first_name = ?, last_name = ?, dob = ?, address = ? WHERE id = ?',
-    [firstName, lastName, dob, address, userId],
+    [firstname, lastname, dob, address, userId],
     (err) => {
       if (err) {
         console.error('Error executing query:', err.message);

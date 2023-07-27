@@ -1,22 +1,15 @@
-const createError = require('http-errors');
 const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
-const db = require('./Model/database')
-const cors = require("cors");
+const db = require('./Model/database');
+const cors = require('cors');
 
 var indexRouter = require('./routes/index');
 // var usersRouter = require('./routes/users');
 
 var app = express();
 app.use((req, res, next) => {
-  res.set('Cache-Control', 'no-store')
-  next()
-})
-// view engine setup
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'jade');
+  res.set('Cache-Control', 'no-store');
+  next();
+});
 
 // setup sqlite
 process.on('SIGINT', () => {
@@ -30,22 +23,9 @@ process.on('SIGINT', () => {
   });
 });
 
-
-app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
-// cors set up
-app.use(
-  cors({
-    origin: ["http://localhost:5173"],
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization']
-  })
-);
+app.use(cors());
 
 app.use('/', indexRouter);
 // app.use('/users', usersRouter);
@@ -63,7 +43,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.json({ error: err.message });
 });
 
 module.exports = app;

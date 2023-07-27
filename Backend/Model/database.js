@@ -12,14 +12,14 @@ const db = new sqlite3.Database(dbPath, (err) => {
         id INTEGER PRIMARY KEY,
         first_name TEXT,
         last_name TEXT,
-        
+        dob TEXT,
         address TEXT
       )
     `, (err) => {
       if (err) {
         console.error('Error creating table:', err.message);
       } else {
-        // console.log('Users table created');
+        console.log('Users table created');
       }
     });
   }
