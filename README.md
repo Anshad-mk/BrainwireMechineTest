@@ -12,7 +12,7 @@ Before proceeding with the setup, ensure you have the following prerequisites in
 
 1. Clone the Repository:
    ```
-   git clone https://github.com/Anshad-mk/BrainwireMechineTest.git
+   git clone https://github.com/Anshad-mk/BrainwiredMachineTest.git
    ```
 
 2. Navigate to the project directory:
